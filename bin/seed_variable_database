@@ -1,0 +1,121 @@
+#!/usr/bin/env bash
+
+EXITCODE_SUCCESS=0
+EXITCODE_FAILURE=255
+
+PSQL_BIN=$( which psql )
+
+APP_PATH=$( dirname $0 )/..
+DB_PATH=$( readlink -f $APP_PATH/db )
+LIB_PATH=$( readlink -f $APP_PATH/lib )
+DATA_PATH=$( readlink -f $APP_PATH/data/variable )
+
+USERNAME=db-scaling-test
+DB=db-scaling-test-variable
+
+function generate_random_string() {
+  STR_LEN=$1
+
+  if [ -z $STR_LEN ]; then
+    echo "ERROR in random_string(): No string length given!"
+    exit $EXITCODE_FAILURE
+  fi
+
+  cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w $STR_LEN | head -n 1
+}
+
+
+
+
+NUM_RECORDS=$1
+HOST=$2
+
+if [ -z $NUM_RECORDS ]; then
+  echo "usage: $( basename $0 ) <NUMBER OF RECORDS> [DB HOST]"
+
+  exit $EXITCODE_FAILURE
+
+fi
+
+if [ -z $HOST ]; then
+  HOST=localhost
+fi
+
+
+
+
+for ((IDX=0; IDX < NUM_RECORDS; IDX++)); do
+
+  QUERY="BEGIN;"
+
+  AUTHOR="$( generate_random_string 64 )"
+  EMAIL="$AUTHOR@$( generate_random_string 24 ).com"
+  PASSWORD="$( generate_random_string 48 )"
+
+  POST="$( generate_random_string 64 )"
+  HEADER="$( generate_random_string 64 )"
+  CONTENT="$( generate_random_string 65535 )"
+  STYLE="$( generate_random_string 32767 )"
+
+  TOPIC="$( generate_random_string 64 )"
+  CONTENT="$( generate_random_string 32 )"
+
+  # save our id values for use in other tests.
+  echo $AUTHOR >> $DATA_PATH/authors
+  echo $POST >> $DATA_PATH/posts
+  echo $TOPIC >> $DATA_PATH/topics
+
+  # INSERT INTO AUTHORS.
+  QUERY+="INSERT INTO author.handle(value, readable, writeable, created, updated) \
+    VALUES('$AUTHOR', true, true, (SELECT now()::TIMESTAMP), (SELECT now()::TIMESTAMP));"
+  QUERY+="INSERT INTO author.active(value, handle, readable, writeable, created, updated) \
+    VALUES(true, '$AUTHOR', true, true, (SELECT now()::TIMESTAMP), (SELECT now()::TIMESTAMP));"
+  QUERY+="INSERT INTO author.email(value, handle, readable, writeable, created, updated) \
+    VALUES('$EMAIL', '$AUTHOR', true, true, (SELECT now()::TIMESTAMP), (SELECT now()::TIMESTAMP));"
+  QUERY+="INSERT INTO author.password(value, handle, readable, writeable, created, updated) \
+    VALUES('$PASSWORD', '$AUTHOR', true, true, (SELECT now()::TIMESTAMP), (SELECT now()::TIMESTAMP));"
+  QUERY+="INSERT INTO author.searchable(value, handle, readable, writeable, created, updated) \
+    VALUES(true, '$AUTHOR', true, true, (SELECT now()::TIMESTAMP), (SELECT now()::TIMESTAMP));"
+  QUERY+="INSERT INTO author.commenting(value, handle, readable, writeable, created, updated) \
+    VALUES(true, '$AUTHOR', true, true, (SELECT now()::TIMESTAMP), (SELECT now()::TIMESTAMP));"
+
+
+  # INSERT INTO POSTS.
+  QUERY+="INSERT INTO post.handle(value, readable, writeable, created, updated) \
+    VALUES('$POST', true, true, (SELECT now()::TIMESTAMP), (SELECT now()::TIMESTAMP));"
+  QUERY+="INSERT INTO post.author(value, handle, readable, writeable, created, updated) \
+    VALUES('$AUTHOR', '$POST', true, true, (SELECT now()::TIMESTAMP), (SELECT now()::TIMESTAMP));"
+  QUERY+="INSERT INTO post.active(value, handle, readable, writeable, created, updated) \
+    VALUES(true, '$POST', true, true, (SELECT now()::TIMESTAMP), (SELECT now()::TIMESTAMP));"
+  QUERY+="INSERT INTO post.header(value, handle, readable, writeable, created, updated) \
+    VALUES('$HEADER', '$POST', true, true, (SELECT now()::TIMESTAMP), (SELECT now()::TIMESTAMP));"
+  QUERY+="INSERT INTO post.content(value, handle, readable, writeable, created, updated) \
+    VALUES('$CONTENT', '$POST', true, true, (SELECT now()::TIMESTAMP), (SELECT now()::TIMESTAMP));"
+  QUERY+="INSERT INTO post.style(value, handle, readable, writeable, created, updated) \
+    VALUES('$STYLE', '$POST', true, true, (SELECT now()::TIMESTAMP), (SELECT now()::TIMESTAMP));"
+  QUERY+="INSERT INTO post.searchable(value, handle, readable, writeable, created, updated) \
+    VALUES(true, '$POST', true, true, (SELECT now()::TIMESTAMP), (SELECT now()::TIMESTAMP));"
+  QUERY+="INSERT INTO post.commenting(value, handle, readable, writeable, created, updated) \
+    VALUES(true, '$POST', true, true, (SELECT now()::TIMESTAMP), (SELECT now()::TIMESTAMP));"
+
+
+  # INSERT INTO TOPICS.
+  QUERY+="INSERT INTO topic.handle(value, readable, writeable, created, updated) \
+    VALUES('$TOPIC', true, true, (SELECT now()::TIMESTAMP), (SELECT now()::TIMESTAMP));"
+  QUERY+="INSERT INTO topic.post(value, handle, readable, writeable, created, updated) \
+    VALUES('$POST', '$TOPIC', true, true, (SELECT now()::TIMESTAMP), (SELECT now()::TIMESTAMP));"
+  QUERY+="INSERT INTO topic.content(value, handle, readable, writeable, created, updated) \
+    VALUES('$CONTENT', '$TOPIC', true, true, (SELECT now()::TIMESTAMP), (SELECT now()::TIMESTAMP));"
+  QUERY+="INSERT INTO topic.active(value, handle, readable, writeable, created, updated) \
+    VALUES(true, '$TOPIC', true, true, (SELECT now()::TIMESTAMP), (SELECT now()::TIMESTAMP));"
+  QUERY+="INSERT INTO topic.searchable(value, handle, readable, writeable, created, updated) \
+    VALUES(true, '$TOPIC', true, true, (SELECT now()::TIMESTAMP), (SELECT now()::TIMESTAMP));"
+
+
+  QUERY+="COMMIT;"
+
+  $PSQL_BIN --host=$HOST --quiet --command="$QUERY" $DB $USERNAME
+
+done
+
+exit $EXITCODE_SUCCESS

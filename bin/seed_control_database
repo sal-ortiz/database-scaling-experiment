@@ -1,0 +1,87 @@
+#!/usr/bin/env bash
+
+EXITCODE_SUCCESS=0
+EXITCODE_FAILURE=255
+
+PSQL_BIN=$( which psql )
+
+APP_PATH=$( dirname $0 )/..
+DB_PATH=$( readlink -f $APP_PATH/db )
+LIB_PATH=$( readlink -f $APP_PATH/lib )
+DATA_PATH=$( readlink -f $APP_PATH/data/control )
+
+USERNAME=db-scaling-test
+DB=db-scaling-test-control
+
+function generate_random_string() {
+  STR_LEN=$1
+
+  if [ -z $STR_LEN ]; then
+    echo "ERROR in random_string(): No string length given!"
+    exit $EXITCODE_FAILURE
+  fi
+
+  cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w $STR_LEN | head -n 1
+}
+
+
+
+
+NUM_RECORDS=$1
+HOST=$2
+
+if [ -z $NUM_RECORDS ]; then
+  echo "usage: $( basename $0 ) <NUMBER OF RECORDS> [DB HOST]"
+
+  exit $EXITCODE_FAILURE
+
+fi
+
+if [ -z $HOST ]; then
+  HOST=localhost
+fi
+
+
+for ((IDX=0; IDX < NUM_RECORDS; IDX++)); do
+
+  QUERY="BEGIN;"
+
+  AUTHOR="$( generate_random_string 64 )"
+  EMAIL="$AUTHOR@$( generate_random_string 24 ).com"
+  PASSWORD="$( generate_random_string 48 )"
+
+  POST="$( generate_random_string 64 )"
+  HEADER="$( generate_random_string 64 )"
+  POST_CONTENT="$( generate_random_string 65535 )"
+  STYLE="$( generate_random_string 32767 )"
+
+  TOPIC="$( generate_random_string 64 )"
+  TOPIC_CONTENT="$( generate_random_string 32 )"
+
+  # save our id values for use in other tests.
+  echo $AUTHOR >> $DATA_PATH/authors
+  echo $POST >> $DATA_PATH/posts
+  echo $TOPIC >> $DATA_PATH/topics
+
+  # INSERT INTO AUTHORS.
+  QUERY+="INSERT INTO authors(handle, email, password, active, searchable, commenting) \
+    VALUES('$AUTHOR', '$EMAIL', '$PASSWORD', true, true, true);"
+
+
+  # INSERT INTO POSTS.
+  QUERY+="INSERT INTO posts(handle, author, header, content, style, active, searchable, commenting) \
+    VALUES('$POST', '$AUTHOR', '$HEADER', '$POST_CONTENT', '$STYLE', true, true, true);"
+
+
+  # INSERT INTO TOPICS.
+  QUERY+="INSERT INTO topics(handle, post, content, active, searchable, commenting) \
+    VALUES('$TOPIC', '$POST', '$TOPIC_CONTENT', true, true, true);"
+
+
+  QUERY+="COMMIT;"
+
+  $PSQL_BIN --host=$HOST --quiet --command="$QUERY" $DB $USERNAME
+
+done
+
+exit $EXITCODE_SUCCESS
