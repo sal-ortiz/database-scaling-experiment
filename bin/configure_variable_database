@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+EXITCODE_FAILURE=255
+EXITCODE_SUCCESS=0
+
+PSQL_BIN=$( which psql )
+
+APP_PATH=$( dirname $0 )/..
+DB_PATH=$( readlink -f $APP_PATH/db/variable )
+
+USERNAME=db-scaling-test
+DB=db-scaling-test-variable
+
+HOST=$1
+
+if [ -z $HOST ]; then
+  HOST=localhost
+fi
+
+$PSQL_BIN --host=$HOST --quiet --file="$DB_PATH/environment.sql" --username="postgres"
+
+$PSQL_BIN --host=$HOST --quiet --file="$DB_PATH/setup.sql" $DB $USERNAME
+
+exit $EXITCODE_SUCCESS
