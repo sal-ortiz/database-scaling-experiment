@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+EXITCODE_SUCCESS=0
+
+PSQL_BIN=$( which psql )
+
+APP_PATH=$( dirname $0 )/..
+DB_PATH=$( readlink -f $APP_PATH/db/variable )
+
+HOST=$1
+
+if [ -z $HOST ]; then
+  HOST=localhost
+fi
+
+$PSQL_BIN --host=$HOST --quiet --file="$DB_PATH/destroy.sql" --username="postgres"
+
+exit $EXITCODE_SUCCESS
