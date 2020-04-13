@@ -1,0 +1,84 @@
+#!/usr/bin/env bash
+
+EXITCODE_SUCCESS=0
+EXITCODE_FAILURE=255
+
+PSQL_BIN=$( which psql )
+
+APP_PATH=$( dirname $0 )/..
+DB_PATH=$( readlink -f $APP_PATH/db )
+LIB_PATH=$( readlink -f $APP_PATH/lib )
+DATA_PATH=$( readlink -f $APP_PATH/data/control )
+
+USERNAME=db-scaling-test
+DB=db-scaling-test-control
+
+function generate_random_string() {
+  STR_LEN=$1
+
+  if [ -z $STR_LEN ]; then
+    echo "ERROR in generate_random_string(): No string length given!"
+    exit $EXITCODE_FAILURE
+  fi
+
+  cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w $STR_LEN | head -n 1
+}
+
+function get_random_line() {
+  FILENAME=$1
+
+  if [ -z $STR_LEN ]; then
+    echo "ERROR in get_random_line(): No source filename given!"
+    exit $EXITCODE_FAILURE
+  fi
+
+  shuf -n 1 $FILENAME
+}
+
+
+NUM_RECORDS=$1
+HOST=$2
+
+if [ -z $NUM_RECORDS ]; then
+  echo "usage: $( basename $0 ) <NUMBER OF RECORDS> [DB HOST]"
+
+  exit $EXITCODE_FAILURE
+
+fi
+
+if [ -z $HOST ]; then
+  HOST=localhost
+fi
+
+
+for ((IDX=0; IDX < NUM_RECORDS; IDX++)); do
+
+  AUTHOR=$( get_random_line $DATA_PATH/authors )
+  POST=$( get_random_line $DATA_PATH/posts )
+  TOPIC=$( get_random_line $DATA_PATH/topics )
+
+  EMAIL="$AUTHOR@$( generate_random_string 24 ).com"
+  PASSWORD="$( generate_random_string 48 )"
+  POST_HEADER="$( generate_random_string 64 )"
+  POST_CONTENT="$( generate_random_string 65535 )"
+  TOPIC_CONTENT="$( generate_random_string 32 )"
+
+
+  QUERY="BEGIN;"
+  QUERY+="UPDATE authors SET password='$PASSWORD', email='$EMAIL' WHERE handle='$AUTHOR';"
+  QUERY+="COMMIT;"
+
+  QUERY+="BEGIN;"
+  QUERY+="UPDATE posts SET content='$POST_CONTENT', header='$POST_HEADER' WHERE handle='$POST';"
+  QUERY+="COMMIT;"
+
+  QUERY+="BEGIN;"
+  QUERY+="UPDATE topics SET content='$TOPIC_CONTENT', WHERE handle='$TOPIC';"
+  QUERY+="COMMIT;"
+
+
+  $PSQL_BIN --host=$HOST --quiet --command="$QUERY" $DB $USERNAME
+
+done
+
+exit $EXITCODE_SUCCESS

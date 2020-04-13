@@ -1,0 +1,69 @@
+#!/usr/bin/env bash
+
+EXITCODE_SUCCESS=0
+EXITCODE_FAILURE=255
+
+PSQL_BIN=$( which psql )
+
+APP_PATH=$( dirname $0 )/..
+DB_PATH=$( readlink -f $APP_PATH/db )
+LIB_PATH=$( readlink -f $APP_PATH/lib )
+DATA_PATH=$( readlink -f $APP_PATH/data/variable )
+
+USERNAME=db-scaling-test
+DB=db-scaling-test-variable
+
+function generate_random_string() {
+  STR_LEN=$1
+
+  if [ -z $STR_LEN ]; then
+    echo "ERROR in random_string(): No string length given!"
+    exit $EXITCODE_FAILURE
+  fi
+
+  cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w $STR_LEN | head -n 1
+ }
+
+NUM_RECORDS=$1
+HOST=$2
+
+if [ -z $NUM_RECORDS ]; then
+  echo "usage: $( basename $0 ) <NUMBER OF RECORDS> [DB HOST]"
+
+  exit $EXITCODE_FAILURE
+
+fi
+
+if [ -z $HOST ]; then
+  HOST=localhost
+fi
+
+
+for ((IDX=0; IDX < NUM_RECORDS; IDX++)); do
+
+  EMAIL="$AUTHOR@$( generate_random_string 24 ).com"
+  PASSWORD="$( generate_random_string 48 )"
+  POST_HEADER="$( generate_random_string 64 )"
+  POST_CONTENT="$( generate_random_string 65535 )"
+
+
+  QUERY="BEGIN;"
+  QUERY+="UPDATE author.password SET value='$PASSWORD' WHERE handle='$AUTHOR';"
+  QUERY+="UPDATE author.email SET value='$EMAIL' WHERE handle='$AUTHOR';"
+  QUERY+="COMMIT;"
+
+  QUERY+="BEGIN;"
+  QUERY+="UPDATE post.content SET value='$POST_CONTENT' WHERE handle='$POST';"
+  QUERY+="UPDATE post.header SET value='$POST_CONTENT' WHERE handle='$POST';"
+  QUERY+="COMMIT;"
+
+  QUERY+="BEGIN;"
+  QUERY+="UPDATE topic.content SET value='$TOPIC_CONTENT' WHERE handle='$TOPIC';"
+  QUERY+="COMMIT;"
+
+
+  $PSQL_BIN --host=$HOST --quiet --command="$QUERY" $DB $USERNAME
+
+done
+
+exit $EXITCODE_SUCCESS
