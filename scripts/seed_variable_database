@@ -94,7 +94,7 @@ for ((IDX=0; IDX < NUM_RECORDS; IDX++)); do
   QUERY+="INSERT INTO post.header(value, handle, readable, writeable, created, updated) \
     VALUES('$HEADER', '$POST', true, true, (SELECT now()::TIMESTAMP), (SELECT now()::TIMESTAMP));"
   QUERY+="INSERT INTO post.content(value, handle, readable, writeable, created, updated) \
-    VALUES('$CONTENT', '$POST', true, true, (SELECT now()::TIMESTAMP), (SELECT now()::TIMESTAMP));"
+    VALUES('$POST_CONTENT', '$POST', true, true, (SELECT now()::TIMESTAMP), (SELECT now()::TIMESTAMP));"
   QUERY+="INSERT INTO post.style(value, handle, readable, writeable, created, updated) \
     VALUES('$STYLE', '$POST', true, true, (SELECT now()::TIMESTAMP), (SELECT now()::TIMESTAMP));"
   QUERY+="INSERT INTO post.searchable(value, handle, readable, writeable, created, updated) \
@@ -109,7 +109,7 @@ for ((IDX=0; IDX < NUM_RECORDS; IDX++)); do
   QUERY+="INSERT INTO topic.post(value, handle, readable, writeable, created, updated) \
     VALUES('$POST', '$TOPIC', true, true, (SELECT now()::TIMESTAMP), (SELECT now()::TIMESTAMP));"
   QUERY+="INSERT INTO topic.content(value, handle, readable, writeable, created, updated) \
-    VALUES('$CONTENT', '$TOPIC', true, true, (SELECT now()::TIMESTAMP), (SELECT now()::TIMESTAMP));"
+    VALUES('$TOPIC_CONTENT', '$TOPIC', true, true, (SELECT now()::TIMESTAMP), (SELECT now()::TIMESTAMP));"
   QUERY+="INSERT INTO topic.active(value, handle, readable, writeable, created, updated) \
     VALUES(true, '$TOPIC', true, true, (SELECT now()::TIMESTAMP), (SELECT now()::TIMESTAMP));"
   QUERY+="INSERT INTO topic.searchable(value, handle, readable, writeable, created, updated) \
