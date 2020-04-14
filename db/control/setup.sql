@@ -13,6 +13,7 @@ CREATE DOMAIN STYLE TEXT;
 CREATE DOMAIN TOPIC VARCHAR(24);
 CREATE DOMAIN ACTION VARCHAR(64);
 
+\include_relative ../statistics.sql
 \include_relative authors.sql
 \include_relative posts.sql
 \include_relative topics.sql
