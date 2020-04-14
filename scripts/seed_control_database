@@ -55,7 +55,7 @@ for ((IDX=0; IDX < NUM_RECORDS; IDX++)); do
   TOPIC="$( generate_random_string 64 )"
   TOPIC_CONTENT="$( generate_random_string 32 )"
 
-  TIMESTAMP_SUBQUERY="SELECT DATE_PART('epoch',(SELECT now())::TIMESTAMP)"
+  DATA_LEN=$( expr length "$PASSWORD$EMAIL$POST_CONTENT$POST_HEADER$STYLE$TOPIC_CONTENT" )
 
   # save our id values for use in other tests.
   echo $AUTHOR >> $DATA_PATH/authors
