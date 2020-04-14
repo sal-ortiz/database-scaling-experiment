@@ -6,8 +6,10 @@ EXITCODE_FAILURE=255
 PSQL_BIN=$( which psql )
 
 APP_PATH=$( dirname $0 )/..
-DB_PATH=$( readlink -f $APP_PATH/db )
-DATA_PATH=$( readlink -f $APP_PATH/data/control )
+DB_PATH=$( readlink --canonicalize $APP_PATH )/db
+DATA_PATH=$( readlink --canonicalize $APP_PATH )/data/control
+
+mkdir --parents --verbose $DATA_PATH
 
 USERNAME=db-scaling-test
 DB=db-scaling-test-control
