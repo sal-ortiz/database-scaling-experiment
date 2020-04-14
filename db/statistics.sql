@@ -17,7 +17,7 @@ BEGIN;
     VALUES ('begin'), ('end');
 
   CREATE TABLE statistics.actions (
-    timestamp   REAL,
+    timestamp   TIMESTAMP,
     operation   HANDLE,
     size        BIGINT,
     step        HANDLE,

@@ -70,8 +70,7 @@ for ((IDX=0; IDX < NUM_RECORDS; IDX++)); do
   # INSERT BEGIN TIMESTAMP INTO STATISTICS.
   QUERY+="BEGIN;"
   QUERY+="INSERT INTO statistics.actions(operation, step, timestamp, size) \
-    VALUES ('update', 'begin', date_part('epoch', current_timestamp), $DATA_LEN);"
-  QUERY+="COMMIT;"
+    VALUES ('update', 'begin', current_timestamp, $DATA_LEN);"
 
   QUERY="BEGIN;"
   QUERY+="UPDATE author.password SET value='$PASSWORD' WHERE handle='$AUTHOR';"
@@ -90,7 +89,8 @@ for ((IDX=0; IDX < NUM_RECORDS; IDX++)); do
   # INSERT END TIMESTAMP INTO STATISTICS.
   QUERY+="BEGIN;"
   QUERY+="INSERT INTO statistics.actions(operation, step, timestamp, size) \
-    VALUES ('update', 'end', date_part('epoch', current_timestamp), $DATA_LEN);"
+    VALUES ('update', 'end', current_timestamp, $DATA_LEN);"
+
   QUERY+="COMMIT;"
 
 
