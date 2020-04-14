@@ -48,14 +48,14 @@ for ((IDX=0; IDX < NUM_RECORDS; IDX++)); do
   PASSWORD="$( generate_random_string 48 )"
 
   POST="$( generate_random_string 64 )"
-  HEADER="$( generate_random_string 64 )"
+  POST_HEADER="$( generate_random_string 64 )"
   POST_CONTENT="$( generate_random_string 65535 )"
-  STYLE="$( generate_random_string 32767 )"
+  POST_STYLE="$( generate_random_string 32767 )"
 
   TOPIC="$( generate_random_string 64 )"
   TOPIC_CONTENT="$( generate_random_string 32 )"
 
-  DATA_LEN=$( expr length "$PASSWORD$EMAIL$POST_CONTENT$POST_HEADER$STYLE$TOPIC_CONTENT" )
+  DATA_LEN=$( expr length "$PASSWORD$EMAIL$POST_CONTENT$POST_HEADER$POST_STYLE$TOPIC_CONTENT" )
 
   # save our id values for use in other tests.
   echo $AUTHOR >> $DATA_PATH/authors
@@ -76,7 +76,7 @@ for ((IDX=0; IDX < NUM_RECORDS; IDX++)); do
 
   # INSERT INTO POSTS.
   QUERY+="INSERT INTO posts(handle, author, header, content, style, active, searchable, commenting) \
-    VALUES('$POST', '$AUTHOR', '$HEADER', '$POST_CONTENT', '$STYLE', true, true, true);"
+    VALUES('$POST', '$AUTHOR', '$POST_HEADER', '$POST_CONTENT', '$POST_STYLE', true, true, true);"
 
 
   # INSERT INTO TOPICS.

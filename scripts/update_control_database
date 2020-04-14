@@ -63,6 +63,7 @@ for ((IDX=0; IDX < NUM_RECORDS; IDX++)); do
   PASSWORD="$( generate_random_string 48 )"
   POST_HEADER="$( generate_random_string 64 )"
   POST_CONTENT="$( generate_random_string 65535 )"
+  POST_STYLE="$( generate_random_string 32767 )"
   TOPIC_CONTENT="$( generate_random_string 32 )"
 
   DATA_LEN=$( expr length "$PASSWORD$EMAIL$POST_CONTENT$POST_HEADER$POST_STYLE$TOPIC_CONTENT" )
