@@ -35,18 +35,20 @@ function get_random_line() {
   shuf -n 1 $FILENAME
 }
 
-
-NUM_RECORDS=$1
-HOST=$2
+HOST=$1
+NUM_RECORDS=$2
 
 if [ -z $NUM_RECORDS ]; then
-  echo "usage: $( basename $0 ) <NUMBER OF RECORDS> [DB HOST]"
+  QUERY="SELECT COUNT(handle) from authors;"
+  REGEX="^[[:space:]]{1,}[[:digit:]]{1,}"
 
-  exit $EXITCODE_FAILURE
+  # default to querying the database for the number of records.
+  NUM_RECORDS=$( $PSQL_BIN $DB --username $USERNAME -c "$QUERY" | grep -P $REGEX | tr -d " " )
 
 fi
 
 if [ -z $HOST ]; then
+  # default to localhost if none is given.
   HOST=localhost
 fi
 
