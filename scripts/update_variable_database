@@ -56,7 +56,7 @@ for ((IDX=0; IDX < NUM_RECORDS; IDX++)); do
 
   QUERY+="BEGIN;"
   QUERY+="UPDATE post.content SET value='$POST_CONTENT' WHERE handle='$POST';"
-  QUERY+="UPDATE post.header SET value='$POST_CONTENT' WHERE handle='$POST';"
+  QUERY+="UPDATE post.header SET value='$POST_HEADER' WHERE handle='$POST';"
   QUERY+="COMMIT;"
 
   QUERY+="BEGIN;"
