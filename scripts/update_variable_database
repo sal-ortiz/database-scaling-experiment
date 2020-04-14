@@ -22,7 +22,19 @@ function generate_random_string() {
   fi
 
   cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w $STR_LEN | head -n 1
- }
+}
+
+function get_random_line() {
+  FILENAME=$1
+
+  if [ -z $STR_LEN ]; then
+    echo "ERROR in get_random_line(): No source filename given!"
+    exit $EXITCODE_FAILURE
+  fi
+
+  shuf -n 1 $FILENAME
+}
+
 
 HOST=$1
 NUM_RECORDS=$2
@@ -37,11 +49,16 @@ if [ -z $NUM_RECORDS ]; then
 fi
 
 if [ -z $HOST ]; then
+  # default to localhost if none is given.
   HOST=localhost
 fi
 
 
 for ((IDX=0; IDX < NUM_RECORDS; IDX++)); do
+
+  AUTHOR=$( get_random_line $DATA_PATH/authors )
+  POST=$( get_random_line $DATA_PATH/posts )
+  TOPIC=$( get_random_line $DATA_PATH/topics )
 
   EMAIL="$AUTHOR@$( generate_random_string 24 ).com"
   PASSWORD="$( generate_random_string 48 )"
