@@ -65,6 +65,13 @@ for ((IDX=0; IDX < NUM_RECORDS; IDX++)); do
   POST_CONTENT="$( generate_random_string 65535 )"
   TOPIC_CONTENT="$( generate_random_string 32 )"
 
+  DATA_LEN=$( expr length "$PASSWORD$EMAIL$POST_CONTENT$POST_HEADER$TOPIC_CONTENT" )
+
+  # INSERT BEGIN TIMESTAMP INTO STATISTICS.
+  QUERY+="BEGIN;"
+  QUERY+="INSERT INTO statistics.actions(operation, step, timestamp, size) \
+    VALUES ('update', 'begin', date_part('epoch', current_timestamp), $DATA_LEN);"
+  QUERY+="COMMIT;"
 
   QUERY="BEGIN;"
   QUERY+="UPDATE authors SET password='$PASSWORD', email='$EMAIL' WHERE handle='$AUTHOR';"
@@ -76,6 +83,12 @@ for ((IDX=0; IDX < NUM_RECORDS; IDX++)); do
 
   QUERY+="BEGIN;"
   QUERY+="UPDATE topics SET content='$TOPIC_CONTENT' WHERE handle='$TOPIC';"
+  QUERY+="COMMIT;"
+
+  # INSERT END TIMESTAMP INTO STATISTICS.
+  QUERY+="BEGIN;"
+  QUERY+="INSERT INTO statistics.actions(operation, step, timestamp, size) \
+    VALUES ('update', 'end', date_part('epoch', current_timestamp), $DATA_LEN);"
   QUERY+="COMMIT;"
 
 

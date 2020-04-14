@@ -65,7 +65,7 @@ for ((IDX=0; IDX < NUM_RECORDS; IDX++)); do
   # INSERT BEGIN TIMESTAMP INTO STATISTICS.
   QUERY+="BEGIN;"
   QUERY+="INSERT INTO statistics.actions(operation, step, timestamp, size) \
-    VALUES ('create', 'begin', ($TIMESTAMP_SUBQUERY), $DATA_LEN);"
+    VALUES ('create', 'begin', date_part('epoch', current_timestamp), $DATA_LEN);"
   QUERY+="COMMIT;"
 
   # INSERT INTO AUTHORS.
@@ -88,7 +88,7 @@ for ((IDX=0; IDX < NUM_RECORDS; IDX++)); do
   # INSERT END TIMESTAMP INTO STATISTICS.
   QUERY+="BEGIN;"
   QUERY+="INSERT INTO statistics.actions(operation, step, timestamp, size) \
-    VALUES ('create', 'end', ($TIMESTAMP_SUBQUERY), $DATA_LEN);"
+    VALUES ('create', 'end', date_part('epoch', current_timestamp), $DATA_LEN);"
   QUERY+="COMMIT;"
 
 
