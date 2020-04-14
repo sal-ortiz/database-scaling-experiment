@@ -73,7 +73,7 @@ for ((IDX=0; IDX < NUM_RECORDS; IDX++)); do
   QUERY+="COMMIT;"
 
   QUERY+="BEGIN;"
-  QUERY+="UPDATE topics SET content='$TOPIC_CONTENT', WHERE handle='$TOPIC';"
+  QUERY+="UPDATE topics SET content='$TOPIC_CONTENT' WHERE handle='$TOPIC';"
   QUERY+="COMMIT;"
 
 
