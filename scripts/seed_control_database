@@ -43,8 +43,6 @@ fi
 
 for ((IDX=0; IDX < NUM_RECORDS; IDX++)); do
 
-  QUERY=""
-
   AUTHOR="$( generate_random_string 64 )"
   EMAIL="$AUTHOR@$( generate_random_string 24 ).com"
   PASSWORD="$( generate_random_string 48 )"
@@ -64,14 +62,14 @@ for ((IDX=0; IDX < NUM_RECORDS; IDX++)); do
   echo $POST >> $DATA_PATH/posts
   echo $TOPIC >> $DATA_PATH/topics
 
+  QUERY="BEGIN;"
+
   # INSERT BEGIN TIMESTAMP INTO STATISTICS.
-  QUERY+="BEGIN;"
   QUERY+="INSERT INTO statistics.actions(operation, step, timestamp, size) \
     VALUES ('create', 'begin', current_timestamp, $DATA_LEN);"
 
 
   # INSERT INTO AUTHORS.
-  QUERY+="BEGIN;"
   QUERY+="INSERT INTO authors(handle, email, password, active, searchable, commenting) \
     VALUES('$AUTHOR', '$EMAIL', '$PASSWORD', true, true, true);"
 
@@ -85,10 +83,8 @@ for ((IDX=0; IDX < NUM_RECORDS; IDX++)); do
   QUERY+="INSERT INTO topics(handle, post, content, active, searchable, commenting) \
     VALUES('$TOPIC', '$POST', '$TOPIC_CONTENT', true, true, true);"
 
-  QUERY+="COMMIT;"
 
   # INSERT END TIMESTAMP INTO STATISTICS.
-  QUERY+="BEGIN;"
   QUERY+="INSERT INTO statistics.actions(operation, step, timestamp, size) \
     VALUES ('create', 'end', current_timestamp, $DATA_LEN);"
 
