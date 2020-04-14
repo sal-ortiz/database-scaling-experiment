@@ -44,7 +44,7 @@ fi
 
 for ((IDX=0; IDX < NUM_RECORDS; IDX++)); do
 
-  QUERY="BEGIN;"
+  QUERY=""
 
   AUTHOR="$( generate_random_string 64 )"
   EMAIL="$AUTHOR@$( generate_random_string 24 ).com"
@@ -58,12 +58,21 @@ for ((IDX=0; IDX < NUM_RECORDS; IDX++)); do
   TOPIC="$( generate_random_string 64 )"
   TOPIC_CONTENT="$( generate_random_string 32 )"
 
+  TIMESTAMP_SUBQUERY="SELECT DATE_PART('epoch',(SELECT now())::TIMESTAMP)"
+
   # save our id values for use in other tests.
   echo $AUTHOR >> $DATA_PATH/authors
   echo $POST >> $DATA_PATH/posts
   echo $TOPIC >> $DATA_PATH/topics
 
+  # INSERT BEGIN TIMESTAMP INTO STATISTICS.
+  QUERT+="BEGIN;"
+  QUERY+="INSERT INTO statistics.actions(operation, step, timestamp, size) \
+    VALUES ('create', 'begin', ($TIMESTAMP_SUBQUERY), $DATA_LEN);"
+  QUERY+="COMMIT;"
+
   # INSERT INTO AUTHORS.
+  QUERY+="BEGIN;"
   QUERY+="INSERT INTO authors(handle, email, password, active, searchable, commenting) \
     VALUES('$AUTHOR', '$EMAIL', '$PASSWORD', true, true, true);"
 
@@ -77,8 +86,14 @@ for ((IDX=0; IDX < NUM_RECORDS; IDX++)); do
   QUERY+="INSERT INTO topics(handle, post, content, active, searchable, commenting) \
     VALUES('$TOPIC', '$POST', '$TOPIC_CONTENT', true, true, true);"
 
-
   QUERY+="COMMIT;"
+
+  # INSERT END TIMESTAMP INTO STATISTICS.
+  QUERT+="BEGIN;"
+  QUERY+="INSERT INTO statistics.actions(operation, step, timestamp, size) \
+    VALUES ('create', 'end', ($TIMESTAMP_SUBQUERY), $DATA_LEN);"
+  QUERY+="COMMIT;"
+
 
   $PSQL_BIN --host=$HOST --quiet --command="$QUERY" $DB $USERNAME
 

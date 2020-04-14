@@ -46,7 +46,7 @@ fi
 
 for ((IDX=0; IDX < NUM_RECORDS; IDX++)); do
 
-  QUERY="BEGIN;"
+  QUERY=""
 
   AUTHOR="$( generate_random_string 64 )"
   EMAIL="$AUTHOR@$( generate_random_string 24 ).com"
@@ -54,18 +54,27 @@ for ((IDX=0; IDX < NUM_RECORDS; IDX++)); do
 
   POST="$( generate_random_string 64 )"
   HEADER="$( generate_random_string 64 )"
-  CONTENT="$( generate_random_string 65535 )"
+  POST_CONTENT="$( generate_random_string 65535 )"
   STYLE="$( generate_random_string 32767 )"
 
   TOPIC="$( generate_random_string 64 )"
-  CONTENT="$( generate_random_string 32 )"
+  TOPIC_CONTENT="$( generate_random_string 32 )"
 
+  TIMESTAMP_SUBQUERY="SELECT DATE_PART('epoch',(SELECT now())::TIMESTAMP)"
   # save our id values for use in other tests.
+
   echo $AUTHOR >> $DATA_PATH/authors
   echo $POST >> $DATA_PATH/posts
   echo $TOPIC >> $DATA_PATH/topics
 
+  # INSERT BEGIN TIMESTAMP INTO STATISTICS.
+  QUERT+="BEGIN;"
+  QUERY+="INSERT INTO statistics.actions(operation, step, timestamp, size) \
+    VALUES ('create', 'start', ($TIMESTAMP_SUBQUERY), $DATA_LEN);"
+  QUERY+="COMMIT;"
+
   # INSERT INTO AUTHORS.
+  QUERY+="BEGIN;"
   QUERY+="INSERT INTO author.handle(value, readable, writeable, created, updated) \
     VALUES('$AUTHOR', true, true, (SELECT now()::TIMESTAMP), (SELECT now()::TIMESTAMP));"
   QUERY+="INSERT INTO author.active(value, handle, readable, writeable, created, updated) \
@@ -111,7 +120,12 @@ for ((IDX=0; IDX < NUM_RECORDS; IDX++)); do
   QUERY+="INSERT INTO topic.searchable(value, handle, readable, writeable, created, updated) \
     VALUES(true, '$TOPIC', true, true, (SELECT now()::TIMESTAMP), (SELECT now()::TIMESTAMP));"
 
+  QUERY+="COMMIT;"
 
+  # INSERT END TIMESTAMP INTO STATISTICS.
+  QUERT+="BEGIN;"
+  QUERY+="INSERT INTO statistics.actions(operation, step, timestamp, size) \
+    VALUES ('create', 'end', ($TIMESTAMP_SUBQUERY), $DATA_LEN);"
   QUERY+="COMMIT;"
 
   $PSQL_BIN --host=$HOST --quiet --command="$QUERY" $DB $USERNAME
