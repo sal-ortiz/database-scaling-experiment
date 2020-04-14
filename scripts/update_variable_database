@@ -24,13 +24,15 @@ function generate_random_string() {
   cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w $STR_LEN | head -n 1
  }
 
-NUM_RECORDS=$1
-HOST=$2
+HOST=$1
+NUM_RECORDS=$2
 
 if [ -z $NUM_RECORDS ]; then
-  echo "usage: $( basename $0 ) <NUMBER OF RECORDS> [DB HOST]"
+  QUERY="SELECT COUNT(handle) from authors;"
+  REGEX="^[[:space:]]{1,}[[:digit:]]{1,}"
 
-  exit $EXITCODE_FAILURE
+  # default to querying the database for the number of records.
+  NUM_RECORDS=$( $PSQL_BIN $DB --username $USERNAME -c "$QUERY" | grep -P $REGEX | tr -d " " )
 
 fi
 
