@@ -7,7 +7,6 @@ PSQL_BIN=$( which psql )
 
 APP_PATH=$( dirname $0 )/..
 DB_PATH=$( readlink -f $APP_PATH/db )
-LIB_PATH=$( readlink -f $APP_PATH/lib )
 DATA_PATH=$( readlink -f $APP_PATH/data/control )
 
 USERNAME=db-scaling-test
@@ -23,8 +22,6 @@ function generate_random_string() {
 
   cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w $STR_LEN | head -n 1
 }
-
-
 
 
 NUM_RECORDS=$1
@@ -66,7 +63,7 @@ for ((IDX=0; IDX < NUM_RECORDS; IDX++)); do
   echo $TOPIC >> $DATA_PATH/topics
 
   # INSERT BEGIN TIMESTAMP INTO STATISTICS.
-  QUERT+="BEGIN;"
+  QUERY+="BEGIN;"
   QUERY+="INSERT INTO statistics.actions(operation, step, timestamp, size) \
     VALUES ('create', 'begin', ($TIMESTAMP_SUBQUERY), $DATA_LEN);"
   QUERY+="COMMIT;"
@@ -89,7 +86,7 @@ for ((IDX=0; IDX < NUM_RECORDS; IDX++)); do
   QUERY+="COMMIT;"
 
   # INSERT END TIMESTAMP INTO STATISTICS.
-  QUERT+="BEGIN;"
+  QUERY+="BEGIN;"
   QUERY+="INSERT INTO statistics.actions(operation, step, timestamp, size) \
     VALUES ('create', 'end', ($TIMESTAMP_SUBQUERY), $DATA_LEN);"
   QUERY+="COMMIT;"

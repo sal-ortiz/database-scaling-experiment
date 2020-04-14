@@ -25,8 +25,6 @@ function generate_random_string() {
 }
 
 
-
-
 NUM_RECORDS=$1
 HOST=$2
 
@@ -40,8 +38,6 @@ fi
 if [ -z $HOST ]; then
   HOST=localhost
 fi
-
-
 
 
 for ((IDX=0; IDX < NUM_RECORDS; IDX++)); do
@@ -68,7 +64,7 @@ for ((IDX=0; IDX < NUM_RECORDS; IDX++)); do
   echo $TOPIC >> $DATA_PATH/topics
 
   # INSERT BEGIN TIMESTAMP INTO STATISTICS.
-  QUERT+="BEGIN;"
+  QUERY+="BEGIN;"
   QUERY+="INSERT INTO statistics.actions(operation, step, timestamp, size) \
     VALUES ('create', 'start', ($TIMESTAMP_SUBQUERY), $DATA_LEN);"
   QUERY+="COMMIT;"
@@ -123,10 +119,11 @@ for ((IDX=0; IDX < NUM_RECORDS; IDX++)); do
   QUERY+="COMMIT;"
 
   # INSERT END TIMESTAMP INTO STATISTICS.
-  QUERT+="BEGIN;"
+  QUERY+="BEGIN;"
   QUERY+="INSERT INTO statistics.actions(operation, step, timestamp, size) \
     VALUES ('create', 'end', ($TIMESTAMP_SUBQUERY), $DATA_LEN);"
   QUERY+="COMMIT;"
+
 
   $PSQL_BIN --host=$HOST --quiet --command="$QUERY" $DB $USERNAME
 
