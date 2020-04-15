@@ -8,23 +8,15 @@ PSQL_BIN=$( which psql )
 APP_PATH=$( dirname $0 )/..
 DB_PATH=$( readlink --canonicalize $APP_PATH )/db
 DATA_PATH=$( readlink --canonicalize $APP_PATH )/data/variable
+SCRIPT_PATH=$APP_PATH/scripts
+HELPERS_PATH=$SCRIPT_PATH/helpers
+
+source $HELPERS_PATH/string
 
 mkdir --parents --verbose $DATA_PATH
 
 USERNAME=db-scaling-test
 DB=db-scaling-test-variable
-
-function generate_random_string() {
-  STR_LEN=$1
-
-  if [ -z $STR_LEN ]; then
-    echo "ERROR in random_string(): No string length given!"
-    exit $EXITCODE_FAILURE
-  fi
-
-  cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w $STR_LEN | head -n 1
-}
-
 
 NUM_RECORDS=$1
 HOST=$2

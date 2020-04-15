@@ -5,35 +5,16 @@ EXITCODE_FAILURE=255
 
 PSQL_BIN=$( which psql )
 
-APP_PATH=$( dirname $0 )/..
-DB_PATH=$( readlink -f $APP_PATH/db )
-LIB_PATH=$( readlink -f $APP_PATH/lib )
-DATA_PATH=$( readlink -f $APP_PATH/data/control )
+APP_PATH=$( readlink --canonicalize $( dirname $0 )/.. )
+DB_PATH=$APP_PATH/db
+DATA_PATH=$APP_PATH/data/control
+SCRIPT_PATH=$APP_PATH/scripts
+HELPERS_PATH=$SCRIPT_PATH/helpers
+
+source $HELPERS_PATH/string
 
 USERNAME=db-scaling-test
 DB=db-scaling-test-control
-
-function generate_random_string() {
-  STR_LEN=$1
-
-  if [ -z $STR_LEN ]; then
-    echo "ERROR in generate_random_string(): No string length given!"
-    exit $EXITCODE_FAILURE
-  fi
-
-  cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w $STR_LEN | head -n 1
-}
-
-function get_random_line() {
-  FILENAME=$1
-
-  if [ -z $STR_LEN ]; then
-    echo "ERROR in get_random_line(): No source filename given!"
-    exit $EXITCODE_FAILURE
-  fi
-
-  shuf -n 1 $FILENAME
-}
 
 HOST=$1
 NUM_RECORDS=$2
@@ -55,9 +36,9 @@ fi
 
 for ((IDX=0; IDX < NUM_RECORDS; IDX++)); do
 
-  AUTHOR=$( get_random_line $DATA_PATH/authors )
-  POST=$( get_random_line $DATA_PATH/posts )
-  TOPIC=$( get_random_line $DATA_PATH/topics )
+  AUTHOR=$( get_random_line_from_file $DATA_PATH/authors )
+  POST=$( get_random_line_from_file $DATA_PATH/posts )
+  TOPIC=$( get_random_line_from_file $DATA_PATH/topics )
 
   EMAIL="$AUTHOR@$( generate_random_string 24 ).com"
   PASSWORD="$( generate_random_string 48 )"

@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+function generate_random_string() {
+  STR_LEN=$1
+
+  if [ -z $STR_LEN ]; then
+    echo "ERROR in generate_random_string(): No string length given!"
+    exit $EXITCODE_FAILURE
+  fi
+
+  cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w $STR_LEN | head -n 1
+}
+
+function get_random_line_from_file() {
+  FILENAME=$1
+
+  if [ -z $STR_LEN ]; then
+    echo "ERROR in get_random_line(): No source filename given!"
+    exit $EXITCODE_FAILURE
+  fi
+
+  shuf -n 1 $FILENAME
+}
