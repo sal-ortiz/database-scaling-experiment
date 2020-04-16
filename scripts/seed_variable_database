@@ -13,13 +13,11 @@ HELPERS_PATH=$SCRIPT_PATH/helpers
 
 source $HELPERS_PATH/string
 
-mkdir --parents --verbose $DATA_PATH
+NUM_RECORDS=$1
+HOST=$2
 
 USERNAME=db-scaling-test
 DB=db-scaling-test-variable
-
-NUM_RECORDS=$1
-HOST=$2
 
 if [ -z $NUM_RECORDS ]; then
   echo "usage: $( basename $0 ) <NUMBER OF RECORDS> [DB HOST]"
@@ -31,6 +29,8 @@ fi
 if [ -z $HOST ]; then
   HOST=localhost
 fi
+
+mkdir --parents --verbose $DATA_PATH
 
 
 for ((IDX=0; IDX < NUM_RECORDS; IDX++)); do
