@@ -10,8 +10,9 @@ CREATE DOMAIN STYLE TEXT;
 CREATE DOMAIN TOPIC VARCHAR(24);
 CREATE DOMAIN ACTION VARCHAR(64);
 
-\include_relative authors.sql
-\include_relative posts.sql
-\include_relative topics.sql
+\include_relative ../util.sql
+\include_relative author.sql
+\include_relative post.sql
+\include_relative topic.sql
 
-SET search_path TO posts, topics, authors;
+SET search_path TO post, topic, author;
