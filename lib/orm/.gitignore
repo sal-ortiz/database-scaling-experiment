@@ -1,0 +1,5 @@
+# editor artifacts
+*.sw*
+
+# dependencies
+node_modules
