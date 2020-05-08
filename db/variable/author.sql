@@ -26,7 +26,6 @@ BEGIN;
     readable    BOOLEAN   DEFAULT true,
     writeable   BOOLEAN   DEFAULT true,
 
-
     created     TIMESTAMP WITHOUT TIME ZONE DEFAULT (NOW() AT TIME ZONE 'UTC'),
     updated     TIMESTAMP WITHOUT TIME ZONE DEFAULT (NOW() AT TIME ZONE 'UTC'),
 
