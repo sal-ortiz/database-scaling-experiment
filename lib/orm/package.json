@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/slackjockey/database-scaling-test#readme",
   "dependencies": {
+    "configuration-wrapper": "0.0.3",
     "pg": "^8.0.2"
   }
 }
