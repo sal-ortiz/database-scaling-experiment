@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 EXITCODE_SUCCESS=0
+EXITCODE_FAILURE=1
 
 PSQL_BIN=$( which psql )
 
