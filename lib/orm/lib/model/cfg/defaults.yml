@@ -1,9 +1,0 @@
-
-
-metaKey: '._ormMeta'
-timeout: 6000
-
-system_schemas:
-  - information_schema
-  - pg_catalog
-  - public
