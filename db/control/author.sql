@@ -14,8 +14,4 @@ BEGIN;
 
   );
 
-  CREATE FUNCTION most_recent_author_handle() RETURNS HANDLE AS
-    'SELECT handle FROM author ORDER BY created DESC LIMIT 1'
-  LANGUAGE SQL;
-
 COMMIT;
