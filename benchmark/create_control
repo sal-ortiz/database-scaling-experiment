@@ -8,8 +8,8 @@ PSQL_BIN=$( which psql )
 APP_PATH=$( dirname $0 )/..
 DB_PATH=$( readlink -f $APP_PATH/db/control )
 
-USERNAME=db-scaling-test
-DB=db-scaling-test-control
+USERNAME=db-scaling-experiment
+DB=db-scaling-experiment-control
 
 NUM_RECORDS=$1
 HOST=$2

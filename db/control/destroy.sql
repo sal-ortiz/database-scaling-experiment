@@ -1,4 +1,4 @@
 
-DROP DATABASE "db-scaling-test-control";
+DROP DATABASE "db-scaling-experiment-control";
 
-DROP USER IF EXISTS "db-scaling-test";
+DROP USER IF EXISTS "db-scaling-experiment";

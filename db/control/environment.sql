@@ -1,6 +1,6 @@
 
 -- create user.
-CREATE USER "db-scaling-test";
+CREATE USER "db-scaling-experiment";
 
 -- creatae database.
-CREATE DATABASE "db-scaling-test-control" OWNER "db-scaling-test";
+CREATE DATABASE "db-scaling-experiment-control" OWNER "db-scaling-experiment";

@@ -8,8 +8,8 @@ PSQL_BIN=$( which psql )
 APP_PATH=$( dirname $0 )/..
 BENCHMARK_PATH=$( readlink -f $APP_PATH/benchmark/variable )
 
-USERNAME=db-scaling-test
-DB=db-scaling-test-variable
+USERNAME=db-scaling-experiment
+DB=db-scaling-experiment-variable
 
 NUM_RECORDS=$1
 HOST=$2
