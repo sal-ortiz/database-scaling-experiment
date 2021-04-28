@@ -7,9 +7,6 @@ PSQL_BIN=$( which psql )
 
 APP_PATH=$( dirname $0 )/..
 DB_PATH=$( readlink --canonicalize $APP_PATH )/db/variable
-DATA_PATH_BASE=$( readlink --canonicalize $APP_PATH )/data
-CONTROL_DATA_PATH=$( readlink --canonicalize $DATA_PATH_BASE )/control
-VARIABLE_DATA_PATH=$( readlink --canonicalize $DATA_PATH_BASE )/variable
 
 
 HOST=$1
@@ -19,12 +16,6 @@ if [ -z $HOST ]; then
 fi
 
 $PSQL_BIN --host=$HOST --quiet --file="$DB_PATH/destroy.sql" --username="postgres"
-
-rm --force --verbose --recursive $VARIABLE_DATA_PATH
-
-if [ ! -d $CONTROL_DATA_PATH ]; then
-  rm --force --verbose --recursive $DATA_PATH_BASE
-fi
 
 
 exit $EXITCODE_SUCCESS
