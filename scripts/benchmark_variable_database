@@ -31,10 +31,6 @@ TOTAL_DELETE_TIME=0
 
 RANGE="{1..$NUM_LOOPS}"
 
-$SCRIPT_PATH/destroy_variable_database &> /dev/null
-$SCRIPT_PATH/configure_variable_database &> /dev/null
-$SCRIPT_PATH/seed_variable_database 50 &> /dev/null
-
 for idx in $( eval echo $RANGE ); do
 
   CREATE_TIME=$( run_benchmark $BENCHMARK_PATH/create_variable 1 $HOST )
