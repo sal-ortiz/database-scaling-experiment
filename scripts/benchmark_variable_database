@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+
+EXITCODE_FAILURE=1
+EXITCODE_SUCCESS=0
+
+APP_PATH=$( dirname $0 )/..
+BENCHMARK_PATH=$( readlink -f $APP_PATH/benchmark )
+SCRIPT_PATH=$( readlink -f $APP_PATH/scripts )
+
+source $SCRIPT_PATH/common.sh
+
+
+NUM_LOOPS=$1
+HOST=$2
+
+if [ -z $NUM_LOOPS ]; then
+  echo "USAGE: $( basename $0 ) <NUM_LOOPS> [HOSTNAME]"
+
+  exit $EXITCODE_FAILURE
+fi
+
+if [ -z $HOST ]; then
+  HOST=127.0.0.1
+fi
+
+
+TOTAL_CREATE_TIME=0
+TOTAL_RETRIEVE_TIME=0
+TOTAL_UPDATE_TIME=0
+TOTAL_DELETE_TIME=0
+
+RANGE="{1..$NUM_LOOPS}"
+
+$SCRIPT_PATH/destroy_variable_database &> /dev/null
+$SCRIPT_PATH/configure_variable_database &> /dev/null
+$SCRIPT_PATH/seed_variable_database 50 &> /dev/null
+
+for idx in $( eval echo $RANGE ); do
+
+  CREATE_TIME=$( run_benchmark $BENCHMARK_PATH/create_variable 1 $HOST )
+  RETRIEVE_TIME=$( run_benchmark $BENCHMARK_PATH/read_variable 1 $HOST )
+  UPDATE_TIME=$( run_benchmark $BENCHMARK_PATH/update_variable 1 $HOST )
+  DELETE_TIME=$( run_benchmark $BENCHMARK_PATH/delete_variable 1 $HOST )
+
+  TOTAL_CREATE_TIME=$(( $TOTAL_CREATE_TIME + $CREATE_TIME ))
+  TOTAL_RETRIEVE_TIME=$(( $TOTAL_RETRIEVE_TIME + $RETRIEVE_TIME ))
+  TOTAL_UPDATE_TIME=$(( $TOTAL_UPDATE_TIME + $UPDATE_TIME ))
+  TOTAL_DELETE_TIME=$(( $TOTAL_DELETE_TIME + $DELETE_TIME ))
+
+done
+
+
+echo average create time: $(( $TOTAL_CREATE_TIME / $NUM_LOOPS ))
+echo average retrieve time: $(( $TOTAL_RETRIEVE_TIME / $NUM_LOOPS ))
+echo average update time: $(( $TOTAL_UPDATE_TIME / $NUM_LOOPS ))
+echo average delete time: $(( $TOTAL_DELETE_TIME / $NUM_LOOPS ))
+
+exit $EXITCODE_SUCCESS
