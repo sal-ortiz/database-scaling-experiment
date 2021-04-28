@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+
+EXITCODE_FAILURE=1
+EXITCODE_SUCCESS=0
+
+PSQL_BIN=$( which psql )
+
+APP_PATH=$( dirname $0 )/..
+BENCHMARK_PATH=$( readlink -f $APP_PATH/benchmark/variable )
+
+USERNAME=db-scaling-test
+DB=db-scaling-test-variable
+
+NUM_RECORDS=$1
+HOST=$2
+
+if [ -z $NUM_RECORDS ]; then
+  echo "USAGE: $( basename $0 ) <NUM_RECORDS> [HOSTNAME]"
+
+  exit $EXITCODE_FAILURE
+fi
+
+
+if [ -z $HOST ]; then
+  HOST=localhost
+fi
+
+
+RANGE="{1..$NUM_RECORDS}"
+
+for idx in $( eval echo $RANGE ); do
+  $PSQL_BIN --host=$HOST --quiet --file="$BENCHMARK_PATH/read.sql" $DB $USERNAME
+  echo -n "."
+done
+
+echo ""
+
+exit $EXITCODE_SUCCESS
