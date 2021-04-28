@@ -49,10 +49,9 @@ for idx in $( eval echo $RANGE ); do
 
 done
 
-
-echo average create time: $(( $TOTAL_CREATE_TIME / $NUM_LOOPS ))
-echo average retrieve time: $(( $TOTAL_RETRIEVE_TIME / $NUM_LOOPS ))
-echo average update time: $(( $TOTAL_UPDATE_TIME / $NUM_LOOPS ))
-echo average delete time: $(( $TOTAL_DELETE_TIME / $NUM_LOOPS ))
+echo average create time: $(( $TOTAL_CREATE_TIME / $NUM_LOOPS ))ms per 1000 records.
+echo average retrieve time: $(( $TOTAL_RETRIEVE_TIME / $NUM_LOOPS ))ms per 1000 records.
+echo average update time: $(( $TOTAL_UPDATE_TIME / $NUM_LOOPS ))ms per 1000 records.
+echo average delete time: $(( $TOTAL_DELETE_TIME / $NUM_LOOPS ))ms per 1000 records.
 
 exit $EXITCODE_SUCCESS
