@@ -14,11 +14,12 @@ BEGIN
     SELECT value INTO topic_handle FROM topic.handle WHERE value = post_handle LIMIT 1;
 
 
-    DELETE FROM topic.handle WHERE value = topic_handle;
-    DELETE FROM topic.post WHERE handle = topic_handle;
-    DELETE FROM topic.active WHERE handle = topic_handle;
-    DELETE FROM topic.content WHERE handle = topic_handle;
-    DELETE FROM topic.searchable WHERE handle = topic_handle;
+    DELETE FROM author.handle WHERE value = author_handle;
+    DELETE FROM author.active WHERE handle = author_handle;
+    DELETE FROM author.email WHERE handle = author_handle;
+    DELETE FROM author.password WHERE handle = author_handle;
+    DELETE FROM author.searchable WHERE handle = author_handle;
+    DELETE FROM author.commenting WHERE handle = author_handle;
 
     DELETE FROM post.handle WHERE value = post_handle;
     DELETE FROM post.author WHERE handle = author_handle;
