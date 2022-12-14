@@ -11,6 +11,8 @@ DB_PATH=$( readlink -f $APP_PATH/db/control )
 USERNAME=db-scaling-experiment
 DB=db-scaling-experiment-control
 
+FEEDBACK_INTERVAL=10
+
 NUM_RECORDS=$1
 HOST=$2
 
@@ -30,7 +32,11 @@ RANGE="{1..$NUM_RECORDS}"
 
 for idx in $( eval echo $RANGE ); do
   $PSQL_BIN --host=$HOST --quiet --file="$DB_PATH/seed.sql" $DB $USERNAME
-  echo -n "."
+
+  if [ $(( idx % $FEEDBACK_INTERVAL )) == 0 ]; then
+    echo -n "."
+  fi
+
 done
 
 echo ""
