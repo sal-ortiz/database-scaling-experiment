@@ -11,7 +11,7 @@ source $SCRIPT_PATH/common.sh
 
 
 NUM_LOOPS=$1
-HOST=$1
+HOST=$2
 
 if [ -z $NUM_LOOPS ]; then
   echo "USAGE: $( basename $0 ) <NUM_LOOPS> [HOSTNAME]"
