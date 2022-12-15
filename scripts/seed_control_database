@@ -31,14 +31,15 @@ fi
 RANGE="{1..$NUM_RECORDS}"
 
 for idx in $( eval echo $RANGE ); do
-  $PSQL_BIN --host=$HOST --quiet --file="$DB_PATH/seed.sql" $DB $USERNAME
 
   if [ $(( idx % $FEEDBACK_INTERVAL )) == 0 ]; then
     echo -n "."
   fi
 
+  $PSQL_BIN --host=$HOST --quiet --file="$DB_PATH/seed.sql" $DB $USERNAME
+
 done
 
-echo ""
+echo
 
 exit $EXITCODE_SUCCESS

@@ -34,6 +34,10 @@ RANGE="{1..$NUM_LOOPS}"
 
 for idx in $( eval echo $RANGE ); do
 
+  if [ $(( idx % $FEEDBACK_INTERVAL )) == 0 ]; then
+    echo -n "."
+  fi
+
   CREATE_TIME=$( run_benchmark $BENCHMARK_PATH/create_variable 1 $HOST )
   RETRIEVE_TIME=$( run_benchmark $BENCHMARK_PATH/read_variable 1 $HOST )
   UPDATE_TIME=$( run_benchmark $BENCHMARK_PATH/update_variable 1 $HOST )
@@ -43,10 +47,6 @@ for idx in $( eval echo $RANGE ); do
   TOTAL_RETRIEVE_TIME=$(( $TOTAL_RETRIEVE_TIME + $RETRIEVE_TIME ))
   TOTAL_UPDATE_TIME=$(( $TOTAL_UPDATE_TIME + $UPDATE_TIME ))
   TOTAL_DELETE_TIME=$(( $TOTAL_DELETE_TIME + $DELETE_TIME ))
-
-  if [ $(( idx % $FEEDBACK_INTERVAL )) == 0 ]; then
-    echo -n "."
-  fi
 
 done
 
