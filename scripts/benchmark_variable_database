@@ -9,6 +9,7 @@ SCRIPT_PATH=$( readlink -f $APP_PATH/scripts )
 
 source $SCRIPT_PATH/common.sh
 
+FEEDBACK_INTERVAL=10
 
 NUM_LOOPS=$1
 HOST=$2
@@ -43,9 +44,14 @@ for idx in $( eval echo $RANGE ); do
   TOTAL_UPDATE_TIME=$(( $TOTAL_UPDATE_TIME + $UPDATE_TIME ))
   TOTAL_DELETE_TIME=$(( $TOTAL_DELETE_TIME + $DELETE_TIME ))
 
+  if [ $(( idx % $FEEDBACK_INTERVAL )) == 0 ]; then
+    echo -n "."
+  fi
+
 done
 
 
+echo
 echo average create time: $(( $TOTAL_CREATE_TIME / $NUM_LOOPS ))ms per 1000 records.
 echo average retrieve time: $(( $TOTAL_RETRIEVE_TIME / $NUM_LOOPS ))ms per 1000 records.
 echo average update time: $(( $TOTAL_UPDATE_TIME / $NUM_LOOPS ))ms per 1000 records.
