@@ -5,7 +5,7 @@ DO $$
   DECLARE contact_handle HANDLE;
   DECLARE author_handle HANDLE;
   DECLARE post_handle HANDLE;
-  DECLARE topic_handle HANDLE;
+  --DECLARE topic_handle HANDLE;
 
 BEGIN
 
@@ -31,7 +31,7 @@ BEGIN
           DEFAULT,
           DEFAULT
         )
-      RETURNING handle INTO contact_handle;
+      ;--RETURNING handle INTO contact_handle;
 
       INSERT INTO author(handle, usr, searchable)
         VALUES (
@@ -62,7 +62,7 @@ BEGIN
           generate_string(),
           DEFAULT
         )
-      RETURNING handle INTO topic_handle;
+      ;--RETURNING handle INTO topic_handle;
 
   END LOOP;
 

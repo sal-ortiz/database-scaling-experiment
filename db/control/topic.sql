@@ -8,7 +8,6 @@ BEGIN;
     post        HANDLE    NOT NULL,
     content     HEADER,
     searchable  BOOLEAN   DEFAULT true,
-    commenting  BOOLEAN   DEFAULT true,
 
     created     TIMESTAMP WITHOUT TIME ZONE DEFAULT (NOW() AT TIME ZONE 'UTC'),
     updated     TIMESTAMP WITHOUT TIME ZONE DEFAULT (NOW() AT TIME ZONE 'UTC'),
