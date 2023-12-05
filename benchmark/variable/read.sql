@@ -30,11 +30,7 @@ DO $$
   DECLARE topic_active BOOLEAN;
   DECLARE topic_searchable BOOLEAN;
 
-
 BEGIN
-
-  -- TODO: perform each table update from it's own transaction
-
 
   FOR idx IN 1..1000 LOOP
 

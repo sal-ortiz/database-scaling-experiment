@@ -9,9 +9,6 @@ DO $$
 
 BEGIN
 
-  -- TODO: perform each table update from it's own transaction
-
-
   FOR idx IN 1..1000 LOOP
 
     SELECT value INTO usr_handle FROM usr.handle TABLESAMPLE SYSTEM(1) LIMIT 1;
