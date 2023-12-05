@@ -15,7 +15,7 @@ CREATE DOMAIN ACTION VARCHAR(64);
 CREATE DOMAIN TS TIMESTAMP WITHOUT TIME ZONE;
 
 \include_relative ../util.sql
-\include_relative user.sql
+\include_relative usr.sql
 \include_relative contact.sql
 \include_relative author.sql
 \include_relative post.sql
