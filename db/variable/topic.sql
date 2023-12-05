@@ -26,7 +26,8 @@ BEGIN;
     created     TIMESTAMP WITHOUT TIME ZONE DEFAULT (NOW() AT TIME ZONE 'UTC'),
     updated     TIMESTAMP WITHOUT TIME ZONE DEFAULT (NOW() AT TIME ZONE 'UTC'),
 
-    FOREIGN KEY(value) REFERENCES post.handle(value)
+    FOREIGN KEY(value) REFERENCES post.handle(value),
+    FOREIGN KEY(handle) REFERENCES topic.handle(value)
   );
 
   -- add a table, representing a single entity attribute.
