@@ -72,4 +72,15 @@ BEGIN;
     FOREIGN KEY(handle) REFERENCES topic.handle(value)
   );
 
+  CREATE INDEX variable_topic_handle_value_index ON topic.handle(value);
+
+  CREATE INDEX variable_topic_post_value_index ON topic.post(value);
+  CREATE INDEX variable_topic_post_handle_index ON topic.post(handle);
+
+  CREATE INDEX variable_topic_active_handle_index ON topic.active(handle);
+
+  CREATE INDEX variable_topic_content_handle_index ON topic.content(handle);
+
+  CREATE INDEX variable_topic_searchable_handle_index ON topic.searchable(handle);
+
 COMMIT;

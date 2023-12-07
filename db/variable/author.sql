@@ -42,4 +42,11 @@ BEGIN;
     FOREIGN KEY(handle) REFERENCES author.handle(value)
   );
 
+  CREATE INDEX variable_author_handle_value_index ON author.handle(value);
+
+  CREATE INDEX variable_author_usr_value_index ON author.usr(value);
+  CREATE INDEX variable_author_usr_handle_index ON author.usr(handle);
+
+  CREATE INDEX variable_author_searchable_handle_index ON author.searchable(handle);
+
 COMMIT;

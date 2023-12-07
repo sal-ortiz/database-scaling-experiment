@@ -113,4 +113,21 @@ BEGIN;
     FOREIGN KEY(handle) REFERENCES post.handle(value)
   );
 
+  CREATE INDEX variable_post_handle_value_index ON post.handle(value);
+
+  CREATE INDEX variable_post_author_value_index ON post.author(value);
+  CREATE INDEX variable_post_author_handle_index ON post.author(handle);
+
+  CREATE INDEX variable_post_active_handle_index ON post.active(handle);
+
+  CREATE INDEX variable_post_header_handle_index ON post.header(handle);
+
+  CREATE INDEX variable_post_content_handle_index ON post.content(handle);
+
+  CREATE INDEX variable_post_style_handle_index ON post.style(handle);
+
+  CREATE INDEX variable_post_searchable_handle_index ON post.searchable(handle);
+
+  CREATE INDEX variable_post_commenting_handle_index ON post.commenting(handle);
+
 COMMIT;

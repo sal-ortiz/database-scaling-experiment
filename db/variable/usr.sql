@@ -78,4 +78,16 @@ BEGIN;
     FOREIGN KEY(handle) REFERENCES usr.handle(value)
   );
 
+  CREATE INDEX variable_usr_handle_value_index ON usr.handle(value);
+
+  CREATE INDEX variable_usr_username_handle_index ON usr.username(handle);
+
+  CREATE INDEX variable_usr_active_handle_index ON usr.active(handle);
+
+  CREATE INDEX variable_usr_password_handle_index ON usr.password(handle);
+
+  CREATE INDEX variable_usr_searchable_handle_index ON usr.searchable(handle);
+
+  CREATE INDEX variable_usr_commenting_handle_index ON usr.commenting(handle);
+
 COMMIT;

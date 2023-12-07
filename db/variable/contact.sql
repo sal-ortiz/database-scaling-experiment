@@ -79,4 +79,17 @@ BEGIN;
     FOREIGN KEY(handle) REFERENCES contact.handle(value)
   );
 
+  CREATE INDEX variable_contact_handle_value_index ON contact.handle(value);
+
+  CREATE INDEX variable_contact_usr_value_index ON contact.usr(value);
+  CREATE INDEX variable_contact_usr_handle_index ON contact.usr(handle);
+
+  CREATE INDEX variable_contact_email_handle_index ON contact.email(handle);
+
+  CREATE INDEX variable_contact_phone_handle_index ON contact.phone(handle);
+
+  CREATE INDEX variable_contact_private_handle_index ON contact.private(handle);
+
+  CREATE INDEX variable_contact_searchable_handle_index ON contact.searchable(handle);
+
 COMMIT;
