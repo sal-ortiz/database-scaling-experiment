@@ -15,4 +15,6 @@ BEGIN;
     FOREIGN KEY(usr) REFERENCES usr(handle)
   );
 
+  CREATE INDEX control_contact_usr_index ON contact(usr);
+
 COMMIT;

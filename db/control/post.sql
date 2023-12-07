@@ -18,4 +18,6 @@ BEGIN;
     FOREIGN KEY(author) REFERENCES author(handle)
   );
 
+  CREATE INDEX control_post_author_index ON post(author);
+
 COMMIT;

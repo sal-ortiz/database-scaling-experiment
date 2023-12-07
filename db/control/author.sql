@@ -12,4 +12,6 @@ BEGIN;
     FOREIGN KEY(usr) REFERENCES usr(handle)
   );
 
+  CREATE INDEX control_author_usr_index ON author(usr);
+
 COMMIT;

@@ -13,4 +13,6 @@ BEGIN;
     updated     TIMESTAMP WITHOUT TIME ZONE DEFAULT (NOW() AT TIME ZONE 'UTC')
   );
 
+  CREATE INDEX control_usr_handle_index ON usr(handle);
+
 COMMIT;

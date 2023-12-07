@@ -15,4 +15,6 @@ BEGIN;
     FOREIGN KEY(post) REFERENCES post(handle)
   );
 
+  CREATE INDEX control_topic_post_index ON topic(post);
+
 COMMIT;
